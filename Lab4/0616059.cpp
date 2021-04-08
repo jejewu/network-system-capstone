@@ -95,8 +95,9 @@ int main(){
 		exit(1);
 	 }
     //pcap_loop()
-    //cnt = -1 infinity read
-    //return value -1 error happen 
+    //cnt = -1 infinity read until error happen
+    // user set to NULL
+    //return value -1 error happen
 }
 
 /*
