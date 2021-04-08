@@ -1,14 +1,26 @@
 #include <iostream>
+#include <string>
 #include <pcap.h>
+#include <stdlib.h> //system
 
 
 using namespace std;
 
 
 
-// void create_tunnle(){
-
-// }
+void wake_bridge(){
+    //check whether processor is avaliable or not
+    if(system(NULL) == 0){
+        cout << "command processor is not avaliable" << endl;
+        exit(1);
+    }
+    // BRGr ip link add br0 type bridge
+    // BRGr brctl addif br0 BRGr-eth0
+    // BRGr ip link set br0 up
+    system("ip link add br0 type bridge");
+    system("brctl addif br0 BRGr-eth0");
+    system("ip link set br0 up");
+}
 
 
 int main(){
@@ -27,6 +39,42 @@ int main(){
         number++;
     }
 
+    //select interface
+    int interface;
+    cout << "Insert a number to select interface" <<endl;
+    cin >> interface;
+
+    //move to that interface
+    devp = alldevsp;
+    for(int i = 0; i < interface; i++){
+        devp = devp->next;
+    }
+    // cout << devp->name << endl;
+
+    //start listening
+    cout << "Start listening at $" << devp->name << endl;
+
+    //bridge
+    wake_bridge();
+    
+    //insert expression
+    string expression;
+    cout << "Insert BPF filiter expression: " << endl;
+    cin.ignore();
+    getline(cin, expression);
+    cout << "filter: " << expression << endl;
+
+
+    // pcap_open_live()
+    // return NULL  
+
+    // pcap_compile()
+
+    //pcap_setfilter()
+
+    //pcap_loop()
+    //cnt = -1 infinity read
+    //return value -1 error happen 
 }
 
 /*
