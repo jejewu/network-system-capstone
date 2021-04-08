@@ -66,12 +66,34 @@ int main(){
 
 
     // pcap_open_live()
-    // return NULL  
+    // return NULL -> fail
+    // snaplen maximum number of bytes to be captured by pcap -> bufsiz
+    // promiscuous mode -> 1 to sniff until an error occurs, and if there is an error, store it in the string errbuf
+    // timeout 0 -> no time out we should set it
+    pcap_t * capture_handle;
+    capture_handle = pcap_open_live(devp->name,  BUFSIZ,  1,  1500, errbuf);
+    if(capture_handle == NULL){
+        cerr << "error in pcap_open_live" <<endl;
+        cerr << "error message" << errbuf;
+        exit(1);
+    }
 
     // pcap_compile()
-
+    // optimize -> 1 optimize
+    // return -1 -> fail
+    struct bpf_program fp;		/* The compiled filter expression */
+    bpf_u_int32 netmask = 2356215809; //140.113.0.1
+    if ( pcap_compile(capture_handle, &fp, expression.c_str(), 1, netmask) == -1 ) {
+		cerr << "error in pcap_compile" << expression.c_str();
+        cerr << "error message "<< pcap_geterr(capture_handle);
+		exit(1);
+	 }
     //pcap_setfilter()
-
+    if( pcap_setfilter(capture_handle, &fp) == -1 ) {
+        cerr << "error in pcap_setfilter" <<endl;
+        cerr << "error message" << pcap_geterr(capture_handle);
+		exit(1);
+	 }
     //pcap_loop()
     //cnt = -1 infinity read
     //return value -1 error happen 
